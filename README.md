@@ -2,6 +2,8 @@
 
 CryptoVeil is a full-stack visual cryptography system that utilizes generative AI for cover image creation and implements advanced steganography techniques for secure message hiding. It features a React-based user interface for seamless encryption and decryption operations.
 
+- This project is still in progress.
+
 ## Project Structure
 
 - `backend/`: Python backend using FastAPI
