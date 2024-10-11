@@ -3,23 +3,38 @@
   padding: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
+.encode-section, .decode-section {
+  margin-bottom: 20px;
 }
 
-main {
+form {
   display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-}
-
-section {
-  width: 45%;
+  flex-direction: column;
+  align-items: center;
 }
 
 input, button {
   margin: 10px;
   padding: 10px;
+  width: 300px;
+}
+
+button {
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.result {
+  margin-top: 20px;
+}
+
+img {
+  max-width: 300px;
+  margin-top: 20px;
 }

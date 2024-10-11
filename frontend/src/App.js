@@ -1,62 +1,61 @@
 import React, { useState } from 'react';
 import './App.css';
-import { encryptMessage, decryptImage } from './api';
+import { encodeMessage, decodeMessage } from './api';
 
 function App() {
+  const [encodeImage, setEncodeImage] = useState(null);
+  const [decodeImage, setDecodeImage] = useState(null);
   const [message, setMessage] = useState('');
-  const [image, setImage] = useState(null);
+  const [encodePassword, setEncodePassword] = useState('');
+  const [decodePassword, setDecodePassword] = useState('');
   const [result, setResult] = useState('');
+  const [encodedImage, setEncodedImage] = useState(null);
 
-  const handleEncrypt = async () => {
+  const handleEncode = async (e) => {
+    e.preventDefault();
     try {
-      const response = await encryptMessage(message);
-      setResult(`Encrypted: ${response.encrypted_message}`);
+      const response = await encodeMessage(encodeImage, message, encodePassword);
+      const blob = new Blob([response], { type: 'image/png' });
+      const url = window.URL.createObjectURL(blob);
+      setEncodedImage(url);
+      setResult('Message encoded successfully. Right-click the image and select "Save image as" to download.');
     } catch (error) {
-      console.error('Encryption error:', error);
-      setResult('Encryption failed. Please try again.');
+      setResult('Error encoding message: ' + error.message);
     }
   };
 
-  const handleDecrypt = async () => {
-    if (image) {
-      try {
-        const response = await decryptImage(image);
-        setResult(`Decrypted: ${response.decrypted_message}`);
-      } catch (error) {
-        console.error('Decryption error:', error);
-        setResult('Decryption failed. Please try again.');
-      }
+  const handleDecode = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await decodeMessage(decodeImage, decodePassword);
+      setResult(`Decoded message: ${response.message}\nSize: ${response.size} bytes`);
+    } catch (error) {
+      setResult('Error decoding message: ' + error.message);
     }
   };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>CryptoVeil</h1>
-        <p>GenAI-Powered Visual Cryptography Engine</p>
-      </header>
-      <main>
-        <section>
-          <h2>Encrypt a Message</h2>
-          <input 
-            type="text" 
-            value={message} 
-            onChange={(e) => setMessage(e.target.value)} 
-            placeholder="Enter your message" 
-          />
-          <button onClick={handleEncrypt}>Encrypt</button>
-        </section>
-        <section>
-          <h2>Decrypt an Image</h2>
-          <input 
-            type="file" 
-            accept="image/*" 
-            onChange={(e) => setImage(e.target.files[0])} 
-          />
-          <button onClick={handleDecrypt}>Decrypt</button>
-        </section>
-      </main>
-      <div>
+      <h1>CryptoVeil</h1>
+      <div className="encode-section">
+        <h2>Encode Message</h2>
+        <form onSubmit={handleEncode}>
+          <input type="file" onChange={(e) => setEncodeImage(e.target.files[0])} required />
+          <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Enter message" required />
+          <input type="password" value={encodePassword} onChange={(e) => setEncodePassword(e.target.value)} placeholder="Enter password" required />
+          <button type="submit">Encode</button>
+        </form>
+        {encodedImage && <img src={encodedImage} alt="Encoded" />}
+      </div>
+      <div className="decode-section">
+        <h2>Decode Message</h2>
+        <form onSubmit={handleDecode}>
+          <input type="file" onChange={(e) => setDecodeImage(e.target.files[0])} required />
+          <input type="password" value={decodePassword} onChange={(e) => setDecodePassword(e.target.value)} placeholder="Enter password" required />
+          <button type="submit">Decode</button>
+        </form>
+      </div>
+      <div className="result">
         <h3>Result:</h3>
         <p>{result}</p>
       </div>
